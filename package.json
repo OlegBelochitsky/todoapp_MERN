@@ -13,8 +13,8 @@
     "mongoose": "^5.10.7"
   },
   "scripts": {
-    "dev": "need to setup env && nodemon app.js",
-    "test": "need to setup env && node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "dev": "./init_env_and_start.sh development",
+    "test": "./init_env_and_start.sh test"
   },
   "repository": {
     "type": "git",
