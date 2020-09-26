@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "back end for todo app with mongoose.js + express.js + node.js",
   "main": "app.js",
+  "type":"module",
   "devDependencies": {
     "jest": "^26.4.2",
     "nodemon": "^2.0.4",
     "supertest": "^5.0.0"
+  },
+  "jest": {
+    "testEnvironment": "jest-environment-node",
+    "transform": {}
   },
   "dependencies": {
     "express": "^4.17.1",
