@@ -7,11 +7,13 @@ const MONGODB_URL = process.env.MONGODB_URL;
 
 const app = express();
 
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
+
 app.use("/", (req, res) => {
   res.status(400);
   res.end();
 });
-
 
 let testables;
 
