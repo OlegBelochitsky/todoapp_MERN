@@ -1,0 +1,29 @@
+{
+  "name": "todoapp_back_mern",
+  "version": "1.0.0",
+  "description": "back end for todo app with mongoose.js + express.js + node.js",
+  "main": "app.js",
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "nodemon": "^2.0.4",
+    "supertest": "^5.0.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.7"
+  },
+  "scripts": {
+    "dev": "need to setup env && nodemon app.js",
+    "test": "need to setup env && node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OlegBelochitsky/todoapp_MERN.git"
+  },
+  "author": "OlegBelochitsky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OlegBelochitsky/todoapp_MERN/issues"
+  },
+  "homepage": "https://github.com/OlegBelochitsky/todoapp_MERN#readme"
+}
