@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import todoRouter from "./routes/todo.js";
 
 const NODE_ENV = process.env.NODE_ENV;
 const PORT = process.env.PORT;
@@ -24,6 +25,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/todo", todoRouter);
+
 app.use("/", (req, res) => {
   res.status(400);
   res.end();
@@ -38,7 +41,7 @@ if (["development", "production"].includes(NODE_ENV)) {
       throw e;
     });
 } else if (NODE_ENV == "test") {
-  testables = { app }; 
+  testables = { app };
 } else {
   console.log(
     `Bad NODE_ENV:${NODE_ENV}, should be one of: development/production/test`
