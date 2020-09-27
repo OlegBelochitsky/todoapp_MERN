@@ -15,6 +15,11 @@ todoSchema.add({
   subTodos: [{ type: Schema.Types.ObjectId, ref: "todos" }],
 });
 
-const todoModel = mongoose.model("todos", todoSchema, "todos");
+todoSchema.statics.saveTodo = async function(data, callback){
+    //  = new this(data);
+    // user.save(callback);
+  callback();
+};
 
+const todoModel = mongoose.model("todos", todoSchema, "todos");
 export default todoModel; 
