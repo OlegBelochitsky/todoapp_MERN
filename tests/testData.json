@@ -13,5 +13,12 @@
         ]
       }
     ]
+  },
+  "graph": {
+    "data": 1,
+    "sons": [
+      { "data": 2 },
+      { "data": 3, "sons": [{ "data": 4 }, { "data": 5 }] }
+    ]
   }
 }
