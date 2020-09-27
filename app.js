@@ -19,6 +19,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  console.log(`got ${req.method} request with route: ${req.url}`);
+  next();
+});
+
 app.use("/", (req, res) => {
   res.status(400);
   res.end();
