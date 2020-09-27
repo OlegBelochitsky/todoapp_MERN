@@ -34,4 +34,4 @@ async function* BFS(root, childFieldName, explore) {
   return;
 }
 
-export { BFS };
+export default BFS;
