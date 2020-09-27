@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import BFS from "../util/bfs.js";
+
 const { Schema } = mongoose;
 
 const todoSchema = Schema();
@@ -15,11 +17,16 @@ todoSchema.add({
   subTodos: [{ type: Schema.Types.ObjectId, ref: "todos" }],
 });
 
-todoSchema.statics.saveTodo = async function(data, callback){
-    //  = new this(data);
-    // user.save(callback);
-  callback();
+todoSchema.statics.saveTodo = async function (todos, callback) {
+  //TODO reverse graph pointers
+  //TODO save todo starting from childern, and push id to perents 'subTodos' , return root
+
+  if (callback instanceof Function) {
+    return callback(location);
+  } else {
+    return location;
+  }
 };
 
 const todoModel = mongoose.model("todos", todoSchema, "todos");
-export default todoModel; 
+export default todoModel;

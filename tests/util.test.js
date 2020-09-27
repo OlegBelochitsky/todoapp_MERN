@@ -1,4 +1,4 @@
-import  BFS  from "../util/bfs.js";
+import BFS from "../util/bfs.js";
 import testData from "./testData.json";
 
 describe("Testing async generator BFS", () => {
