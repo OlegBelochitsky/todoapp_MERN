@@ -25,8 +25,11 @@ describe("Testing async generator BFS", () => {
     cyclic.sons[0].sons.push(cyclic);
     const generator = BFS(cyclic, "sons", (node) => node.data);
     const traverseOrder = [];
+    let counter = 0;
     for await (let item of generator) {
       traverseOrder.push(item);
+      counter++;
+      if (counter > 5) break; // to avoid infinity loop
     }
     expect(traverseOrder).toEqual([1, 2]);
   });
