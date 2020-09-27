@@ -1,0 +1,17 @@
+{
+  "singleTodo": { "description": "singleTodo" },
+  "todoList": {
+    "description": "singleList",
+    "subTodos": [
+      { "description": "subTodo1" },
+      {
+        "description": "subTodo2",
+        "subTodos": [
+          { "description": "subSubTodo1" },
+          { "description": "subSubTodo2" },
+          { "description": "subSubTodo3" }
+        ]
+      }
+    ]
+  }
+}
