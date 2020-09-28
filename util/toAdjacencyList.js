@@ -4,22 +4,38 @@ function isHasChilds(node, childFieldName) {
   return Boolean(node?.[childFieldName]);
 }
 
-async function toAdjacencyList(root, childFieldName) {
+async function getBfsTraversalOf(root, childFieldName) {
   const bfsTraversal = [];
   for await (const n of BFS(root, childFieldName, (n) => n)) {
     bfsTraversal.push(n);
   }
+  return bfsTraversal;
+}
 
+function createNumberMappers(nodes) {
   const numberToNode = new Map();
   const nodeToNumber = new Map();
-  const inVertices = [];
-  const outVertices = [];
-  for (let i = 0; i < bfsTraversal.length; i++) {
-    numberToNode.set(i, bfsTraversal[i]);
-    nodeToNumber.set(bfsTraversal[i], i);
-    inVertices.push([]);
-    outVertices.push([]);
+  for (let i = 0; i < nodes.length; i++) {
+    numberToNode.set(i, nodes[i]);
+    nodeToNumber.set(nodes[i], i);
   }
+  return { numberToNode, nodeToNumber };
+}
+
+function creatreArrayOfEmptyArrays(numberOfEmptyArrays) {
+  const array = [];
+  for (let i = 0; i < numberOfEmptyArrays; i++) {
+    array.push([]);
+  }
+  return array;
+}
+
+
+async function toAdjacencyList(root, childFieldName) {
+  const bfsTraversal = await getBfsTraversalOf(root, childFieldName);
+  const { numberToNode, nodeToNumber } = createNumberMappers(bfsTraversal);
+  const inVertices = creatreArrayOfEmptyArrays(bfsTraversal.length);
+  const outVertices = creatreArrayOfEmptyArrays(bfsTraversal.length);
 
   bfsTraversal.forEach((n) => {
     const num = nodeToNumber.get(n);
