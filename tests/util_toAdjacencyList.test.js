@@ -12,8 +12,10 @@ describe("Testing toAdjacencyList conversions", () => {
     } = await toAdjacencyList(graph, "sons");
     expect(numberToNode.get(0)).toBe(graph);
     expect(nodeToNumber.get(graph)).toBe(0);
-    expect(inVertices).toBe([[]]);
-    expect(outVertices).toBe([[]]);
+    expect(inVertices.length).toBe(1);
+    expect(outVertices.length).toBe(1);
+    expect(inVertices[0].length).toBe(0);
+    expect(outVertices[0].length).toBe(0);
   });
 
   it("can convert graph with many nodes", async () => {
@@ -31,7 +33,7 @@ describe("Testing toAdjacencyList conversions", () => {
       expect(nodeToNumber.get(numberToNode.get(i))).toBe(i);
     }
 
-    expect(inVertices).toBe([[], [0], [0], [2], [2]]);
-    expect(outVertices).toBe([[1, 2], [], [3, 4], [], []]);
+    expect(inVertices).toEqual([[], [0], [0], [2], [2]]);
+    expect(outVertices).toEqual([[1, 2], [], [3, 4], [], []]);
   });
 });
