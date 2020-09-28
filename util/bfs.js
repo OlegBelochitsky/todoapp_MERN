@@ -8,12 +8,11 @@ function isVisited(node) {
   return Boolean(node?.[visited]);
 }
 
-function isHasChilds(node, getChildren) {
-  const children = getChildren(node);
-  return Boolean( children?.length > 0);
+function isHasChilds(node, childFieldName) {
+  return Boolean(node?.[childFieldName]);
 }
 
-async function* BFS(root, getChildren, explore) {
+async function* BFS(root, childFieldName, explore) {
   const queue = [];
   queue.push(root);
 
@@ -25,9 +24,8 @@ async function* BFS(root, getChildren, explore) {
 
       markVisited(node);
 
-      if (isHasChilds(node, getChildren)) {
-        const children = getChildren(node);
-        children.forEach((n) => {
+      if (isHasChilds(node, childFieldName)) {
+        node[childFieldName].forEach((n) => {
           if (!isVisited(n)) queue.push(n);
         });
       }
