@@ -17,7 +17,7 @@ describe("Testing todo model", () => {
 
   it("Should save a singleTodo", async () => {
     await todoModel.saveTodo(testData.singleTodo);
-    const todo = await todoModel
+    const [todo] = await todoModel
       .find({ description: testData.singleTodo.description })
       .exec();
     expect(todo.description).toBe(testData.singleTodo.description);
@@ -25,12 +25,22 @@ describe("Testing todo model", () => {
 
   it("Should save a todoList", async () => {
     await todoModel.saveTodo(testData.todoList);
-    const todo = await todoModel
+    const [todo] = await todoModel
       .find({ description: testData.todoList.description })
-      .exec();
+      .populate({
+        path: "subTodos",
+        model: this,
+        populate: {
+          path: "subTodos",
+          model: this,
+        },
+      });
+
     expect(todo.description).toBe(testData.todoList.description);
-    expect(todo.subTodos[1].subTodos[2].description).toBe(
-      testData.todoList.subTodos[1].subTodos[2].description
+    expect(["subTodo1", "subTodo2"]).toContain(todo.subTodos[0].description);
+    expect(["subSubTodo1", "subSubTodo2", "subSubTodo3"]).toContain(
+      todo?.subTodos[0]?.subTodos[0].description ??
+        todo?.subTodos[1]?.subTodos[0].description
     );
   });
 
