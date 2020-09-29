@@ -3,14 +3,14 @@ function isHasChilds(node, childFieldName) {
 }
 
 async function* BFS(root, childFieldName, explore) {
-  const visited = Symbol("visited");
+  const visitedMap = new Map();
 
   function markVisited(node) {
-    node[visited] = true;
+    visitedMap.set(node,true);
   }
 
   function isVisited(node) {
-    return Boolean(node?.[visited]);
+    return visitedMap.has(node);
   }
 
   const queue = [];
