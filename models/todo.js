@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
-import BFS from "../util/bfs.js";
+import toAdjacencyList from "../util/toAdjacencyList.js";
+import {
+  getBfsTraversalOf,
+  creatreArrayOfEmptyArrays,
+} from "../util/toAdjacencyList.js";
 
 const { Schema } = mongoose;
 
@@ -18,13 +22,35 @@ todoSchema.add({
 });
 
 todoSchema.statics.saveTodo = async function (todos, callback) {
-  //TODO reverse graph pointers
-  //TODO save todo starting from childern, and push id to perents 'subTodos' , return root
+  const bfsTraversal = await getBfsTraversalOf(todos, "subTodos");
+  const {
+    numberToNode,
+    nodeToNumber,
+    inVertices,
+    outVertices,
+  } = await toAdjacencyList(todos, "subTodos");
+  const savedChildrenObjIds = creatreArrayOfEmptyArrays(bfsTraversal.length);
+  const reverseBfs = bfsTraversal.slice().reverse();
+  let lastSave;
+  for (const todo of reverseBfs) {
+    const nodeNum = nodeToNumber.get(todo);
+    const toSave = {
+      description: todo.description,
+      done: todo.done,
+      isRoot: todo.isRoot,
+      subTodos: savedChildrenObjIds[nodeNum],
+    };
+    lastSave = await new this(toSave).save();
+    const { _id } = lastSave;
+    for (const perent of inVertices[nodeNum]) {
+      savedChildrenObjIds[perent].push(_id);
+    }
+  }
 
   if (callback instanceof Function) {
-    return callback(location);
+    return callback(lastSave);
   } else {
-    return location;
+    return lastSave;
   }
 };
 
