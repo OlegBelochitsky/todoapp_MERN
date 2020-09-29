@@ -8,11 +8,14 @@ test("Should failed when env not test ", () => {
 
 describe("Testing todo model", () => {
   beforeAll(() => {
-    mongoose.connect(process.env.MONGODB_URL);
+    mongoose.connect(process.env.MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   });
 
   afterEach(() => {
-    return todoModel.remove({});
+    return todoModel.deleteMany({});
   });
 
   it("Should save a singleTodo", async () => {
