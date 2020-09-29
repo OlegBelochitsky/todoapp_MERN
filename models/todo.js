@@ -54,5 +54,24 @@ todoSchema.statics.saveTodo = async function (todos, callback) {
   }
 };
 
+todoSchema.statics.populateAll = async function (root, limit) {
+  const maxDepth = limit ?? Infinity;
+  const queue = [];
+  queue.push({ item: root, depth: 0 });
+  while (queue.length > 0) {
+    const { item, depth } = queue.shift();
+    if (depth < maxDepth) {
+      await todoModel.populate(item, {
+        path: "subTodos",
+        model: this,
+      });
+    }
+    if (item?.subTodos?.length > 0 && depth < maxDepth)
+      item.subTodos.forEach((subTodo) =>
+        queue.push({ item: subTodo, depth: depth + 1 })
+      );
+  }
+};
+
 const todoModel = mongoose.model("todos", todoSchema, "todos");
 export default todoModel;
