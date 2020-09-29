@@ -64,19 +64,24 @@ describe("Testing todo model", () => {
 
   it("can populateAll nested todo", async () => {
     const root = await todoModel.saveTodo(testData.todoList, callback);
-    const populated = await todoModel.populateAll(root);
-    const itemsFromDB = await getBfsTraversalOf(populated, "subTodos");
-    const itemsFromTestData = await getBfsTraversalOf( testData.todoList, "subTodos");
+    await todoModel.populateAll(root);
+    const itemsFromDB = await getBfsTraversalOf(root, "subTodos");
+    const itemsFromTestData = await getBfsTraversalOf(
+      testData.todoList,
+      "subTodos"
+    );
     expect(itemsFromDB.sort()).toEqual(itemsFromTestData.sort());
   });
 
   it("can populateAll nested todo with depth limit", async () => {
     const root = await todoModel.saveTodo(testData.todoList, callback);
-    const populated = await todoModel.populateAll(root,1);
+    await todoModel.populateAll(root, 1);
 
-    expect(["subTodo1", "subTodo2"]).toContain(populated.subTodos[0].description);
-    expect(populated.subTodos[0].subTodos?.[0]?.description).toBeUndefined();
-    expect(populated.subTodos[1].subTodos?.[0]?.description).toBeUndefined();
+    expect(["subTodo1", "subTodo2"]).toContain(
+      populated.subTodos[0].description
+    );
+    expect(root.subTodos[0].subTodos?.[0]?.description).toBeUndefined();
+    expect(root.subTodos[1].subTodos?.[0]?.description).toBeUndefined();
   });
 
   afterAll((done) => {
