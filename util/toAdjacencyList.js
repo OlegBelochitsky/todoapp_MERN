@@ -30,7 +30,6 @@ function creatreArrayOfEmptyArrays(numberOfEmptyArrays) {
   return array;
 }
 
-
 async function toAdjacencyList(root, childFieldName) {
   const bfsTraversal = await getBfsTraversalOf(root, childFieldName);
   const { numberToNode, nodeToNumber } = createNumberMappers(bfsTraversal);
@@ -50,4 +49,5 @@ async function toAdjacencyList(root, childFieldName) {
   return { numberToNode, nodeToNumber, inVertices, outVertices };
 }
 
+export { getBfsTraversalOf, creatreArrayOfEmptyArrays};
 export default toAdjacencyList;
