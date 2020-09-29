@@ -44,6 +44,13 @@ describe("Testing todo model", () => {
     );
   });
 
+  it("Can use callback function", (done) => {
+    function callback() {
+      done();
+    }
+    todoModel.saveTodo(testData.singleTodo, callback);
+  });
+
   afterAll((done) => {
     mongoose.disconnect(done);
   });
