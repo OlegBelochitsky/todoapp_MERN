@@ -19,8 +19,7 @@ async function* BFS(root, childFieldName, explore) {
   while (queue.length !== 0) {
     let node = queue.shift();
 
-    if (!isVisited(node)) {
-      yield await explore(node);
+     yield await explore(node);
 
       markVisited(node);
 
@@ -29,7 +28,6 @@ async function* BFS(root, childFieldName, explore) {
           if (!isVisited(n)) queue.push(n);
         });
       }
-    }
   }
   return;
 }
