@@ -1,18 +1,18 @@
-const visited = Symbol("visited");
-
-function markVisited(node) {
-  node[visited] = true;
-}
-
-function isVisited(node) {
-  return Boolean(node?.[visited]);
-}
-
 function isHasChilds(node, childFieldName) {
   return Boolean(node?.[childFieldName]);
 }
 
 async function* BFS(root, childFieldName, explore) {
+  const visited = Symbol("visited");
+
+  function markVisited(node) {
+    node[visited] = true;
+  }
+
+  function isVisited(node) {
+    return Boolean(node?.[visited]);
+  }
+
   const queue = [];
   queue.push(root);
 
