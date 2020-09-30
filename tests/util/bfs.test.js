@@ -1,5 +1,5 @@
-import BFS from "../util/bfs.js";
-import testData from "./testData.json";
+import BFS from "../../util/bfs.js";
+import testData from "../testData.json";
 
 describe("Testing async generator BFS", () => {
   it("can scan graph with one node", async () => {

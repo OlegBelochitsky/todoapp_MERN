@@ -1,5 +1,5 @@
-import toAdjacencyList from "../util/toAdjacencyList.js";
-import testData from "./testData.json";
+import toAdjacencyList from "../../util/toAdjacencyList.js";
+import testData from "../testData.json";
 
 describe("Testing toAdjacencyList conversions", () => {
   it("can convert graph with single node", async () => {

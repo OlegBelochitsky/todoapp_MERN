@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import todoModel from "../models/todo.js";
-import testData from "./testData.json";
-import { getBfsTraversalOf } from "../util/toAdjacencyList.js";
+import todoModel from "../../models/todo.js";
+import testData from "../testData.json";
+import { getBfsTraversalOf } from "../../util/toAdjacencyList.js";
 
 test("Should failed when env not test ", () => {
   expect(process.env.NODE_ENV).toEqual("test");

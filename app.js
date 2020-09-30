@@ -41,7 +41,7 @@ if (["development", "production"].includes(NODE_ENV)) {
       throw e;
     });
 } else if (NODE_ENV == "test") {
-  testables = { app };
+  testables = { app,db };
 } else {
   console.log(
     `Bad NODE_ENV:${NODE_ENV}, should be one of: development/production/test`
