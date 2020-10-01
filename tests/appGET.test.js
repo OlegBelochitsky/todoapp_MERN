@@ -63,8 +63,8 @@ describe("GET /todo/:id", () => {
     const id = "123123";
     const response = await request.get(`/todo/${id}`);
     expect(response.status).toBe(404);
-    
-    const id2 = (_id[0] == 'a' ? 'a':'b') +  (''+_id).slice(1);
+
+    const id2 = (_id[0] == "a" ? "a" : "b") + ("" + _id).slice(1);
     const response2 = await request.get(`/todo/${id2}`);
     expect(response2.status).toBe(404);
   });
