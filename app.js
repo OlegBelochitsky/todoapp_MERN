@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 app.use("/todo", todoRouter);
 
 app.use("/", (req, res) => {
-  res.status(400);
+  res.status(404);
   res.end();
 });
 

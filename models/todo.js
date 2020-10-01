@@ -61,7 +61,7 @@ todoSchema.statics.populateAll = async function (root, limit) {
   while (queue.length > 0) {
     const { item, depth } = queue.shift();
     if (depth < maxDepth) {
-      await todoModel.populate(item, {
+      await this.populate(item, {
         path: "subTodos",
         model: this,
       });
