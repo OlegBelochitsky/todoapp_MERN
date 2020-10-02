@@ -1,9 +1,7 @@
 import mongoose from "mongoose";
 import toAdjacencyList from "../util/toAdjacencyList.js";
-import {
-  getBfsTraversalOf,
-  creatreArrayOfEmptyArrays,
-} from "../util/toAdjacencyList.js";
+import { creatreArrayOfEmptyArrays } from "../util/toAdjacencyList.js";
+import BFS from "../util/bfs.js";
 
 const { Schema } = mongoose;
 
@@ -22,13 +20,13 @@ todoSchema.add({
 });
 
 todoSchema.statics.saveTodo = async function (todos, callback) {
-  const bfsTraversal = await getBfsTraversalOf(todos, "subTodos");
+  const { bfsTraversal } = BFS(todos, "subTodos");
   const {
     numberToNode,
     nodeToNumber,
     inVertices,
     outVertices,
-  } = await toAdjacencyList(todos, "subTodos");
+  } = toAdjacencyList(todos, "subTodos");
   const savedChildrenObjIds = creatreArrayOfEmptyArrays(bfsTraversal.length);
   const reverseBfs = bfsTraversal.slice().reverse();
   let lastSave;

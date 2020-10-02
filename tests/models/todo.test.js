@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import todoModel from "../../models/todo.js";
 import testData from "../testData.json";
-import { getBfsTraversalOf } from "../../util/toAdjacencyList.js";
+import BFS from "../../util/bfs.js";
 
 test("Should failed when env not test ", () => {
   expect(process.env.NODE_ENV).toEqual("test");
@@ -64,8 +64,8 @@ describe("Testing todo model", () => {
   it("can populateAll nested todo", async () => {
     const root = await todoModel.saveTodo(testData.todoList);
     await todoModel.populateAll(root);
-    const itemsFromDB = await getBfsTraversalOf(root, "subTodos");
-    const itemsFromTestData = await getBfsTraversalOf(
+    const { bfsTraversal: itemsFromDB } = BFS(root, "subTodos");
+    const { bfsTraversal: itemsFromTestData } = BFS(
       testData.todoList,
       "subTodos"
     );
@@ -83,9 +83,7 @@ describe("Testing todo model", () => {
     const root = await todoModel.saveTodo(testData.todoList);
     await todoModel.populateAll(root, 1);
 
-    expect(["subTodo1", "subTodo2"]).toContain(
-      root.subTodos[0].description
-    );
+    expect(["subTodo1", "subTodo2"]).toContain(root.subTodos[0].description);
     expect(root.subTodos[0].subTodos?.[0]?.description).toBeUndefined();
     expect(root.subTodos[1].subTodos?.[0]?.description).toBeUndefined();
   });

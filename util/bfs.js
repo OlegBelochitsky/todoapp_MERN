@@ -2,11 +2,13 @@ function isHasChilds(node, childFieldName) {
   return Boolean(node?.[childFieldName]);
 }
 
-async function* BFS(root, childFieldName, explore) {
+function BFS(root, childFieldName) {
   const visitedMap = new Map();
+  const bfsTraversal = [];
+  let isTree = true;
 
   function markVisited(node) {
-    visitedMap.set(node, true);
+    visitedMap.set(node, 0);
   }
 
   function isVisited(node) {
@@ -18,18 +20,16 @@ async function* BFS(root, childFieldName, explore) {
 
   while (queue.length !== 0) {
     let node = queue.shift();
-
-    yield await explore(node);
-
+    bfsTraversal.push(node);
     markVisited(node);
-
     if (isHasChilds(node, childFieldName)) {
       node[childFieldName].forEach((n) => {
         if (!isVisited(n)) queue.push(n);
+        else isTree = false;
       });
     }
   }
-  return;
+  return { bfsTraversal , isTree };
 }
 
 export default BFS;
