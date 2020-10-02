@@ -23,7 +23,7 @@ todoRouter.get("/:id", async (req, res) => {
       await todoModel.populateAll(todo);
       res.status(200).send({ todo: todo });
     } else {
-      throw new Error('id not found');
+      throw new Error("id not found");
     }
   } catch (e) {
     res
@@ -33,15 +33,22 @@ todoRouter.get("/:id", async (req, res) => {
   res.end();
 });
 
-todoRouter.patch("/:id", async (req, res) => {
-  res.end();
-});
-
 todoRouter.post("/", async (req, res) => {
+  if (isBodyValid(req.body)) {
+    const todo = await todoModel.saveTodo({ ...req.body, isRoot: true });
+    await todoModel.populateAll(todo);
+    res.status(200).send(todo);
+  } else {
+    res.status(404).send({ massage: "invalid todo" });
+  }
   res.end();
 });
 
 todoRouter.put("/:id", async (req, res) => {
+  res.end();
+});
+
+todoRouter.patch("/:id", async (req, res) => {
   res.end();
 });
 

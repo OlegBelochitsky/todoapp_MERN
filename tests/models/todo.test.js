@@ -43,8 +43,8 @@ describe("Testing todo model", () => {
     expect(todo.description).toBe(testData.todoList.description);
     expect(["subTodo1", "subTodo2"]).toContain(todo.subTodos[0].description);
     expect(["subSubTodo1", "subSubTodo2", "subSubTodo3"]).toContain(
-      todo?.subTodos[0]?.subTodos[0].description ??
-        todo?.subTodos[1]?.subTodos[0].description
+      todo?.subTodos[0]?.subTodos[0]?.description ??
+        todo?.subTodos[1]?.subTodos[0]?.description
     );
   });
 

@@ -6,7 +6,7 @@ async function* BFS(root, childFieldName, explore) {
   const visitedMap = new Map();
 
   function markVisited(node) {
-    visitedMap.set(node,true);
+    visitedMap.set(node, true);
   }
 
   function isVisited(node) {
@@ -19,15 +19,15 @@ async function* BFS(root, childFieldName, explore) {
   while (queue.length !== 0) {
     let node = queue.shift();
 
-     yield await explore(node);
+    yield await explore(node);
 
-      markVisited(node);
+    markVisited(node);
 
-      if (isHasChilds(node, childFieldName)) {
-        node[childFieldName].forEach((n) => {
-          if (!isVisited(n)) queue.push(n);
-        });
-      }
+    if (isHasChilds(node, childFieldName)) {
+      node[childFieldName].forEach((n) => {
+        if (!isVisited(n)) queue.push(n);
+      });
+    }
   }
   return;
 }
