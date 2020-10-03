@@ -91,16 +91,17 @@ describe("Testing todo model", () => {
   it("save new todo with updateTodo if todo not exist", async () => {
     const { _id } = await todoModel.updateTodo(testData.todoList);
     const todo = await todoModel.findOne({ _id: _id });
-    expect(todo.description).toEqual(testData.todoList, description);
+    expect(todo.description).toEqual(testData.todoList.description);
   });
 
   it("update saved todo", async () => {
     const root = await todoModel.saveTodo(testData.todoList);
-    const savedTodo = await todoModel.populateAll(root);
-    savedTodo.subTodos[0].description = "new description";
-    const { _id } = await todoModel.updateTodo(savedTodo);
+    await todoModel.populateAll(root);
+    root.subTodos[0].description = "new description";
+    const { _id } = await todoModel.updateTodo(root);
 
     const todo = await todoModel.findOne({ _id: _id });
+    await todoModel.populateAll(todo);
     expect(
       todo.subTodos[0].description == "new description" ||
         todo.subTodos[1].description == "new description"
@@ -108,15 +109,17 @@ describe("Testing todo model", () => {
   });
 
   it("deleteTodo delete todo", async () => {
-    const { _id } = await todoModel.saveTodo(testData.singleTodo);
-    await todoModel.deleteTodo(_id);
+    const todo = await todoModel.saveTodo(testData.singleTodo);
+    await todoModel.populateAll(todo);
+    await todoModel.deleteTodo(todo);
     const todos = await todoModel.find({});
     expect(todos.length).toBe(0);
   });
 
   it("deleteTodo delete todo's sub todos", async () => {
-    const { _id } = await todoModel.saveTodo(testData.todoList);
-    await todoModel.deleteTodo(_id);
+    const todo = await todoModel.saveTodo(testData.todoList);
+    await todoModel.populateAll(todo);
+    await todoModel.deleteTodo(todo);
     const todos = await todoModel.find({});
     expect(todos.length).toBe(0);
   });

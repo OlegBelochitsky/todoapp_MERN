@@ -72,9 +72,27 @@ todoSchema.statics.populateAll = async function (root, limit) {
 };
 
 todoSchema.statics.updateTodo = async function (todo) {
+  let root;
+  if (todo?._id) 
+      root = await this.findOne({ _id: todo._id });
+
+  if(root){
+    await this.populateAll(root);
+    await this.deleteTodo(root);
+    return this.saveTodo(todo);
+  } else {
+    return this.saveTodo(todo);
+  }
 };
 
 todoSchema.statics.deleteTodo = async function (todo) {
+  const { bfsTraversal } = BFS(todo, "subTodos");
+  await Promise.all(
+    bfsTraversal.map((td) => {
+      const { _id } = td;
+      return this.findOneAndDelete({ _id: _id });
+    })
+  );
 };
 
 const todoModel = mongoose.model("todos", todoSchema, "todos");

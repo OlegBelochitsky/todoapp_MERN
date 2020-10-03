@@ -162,7 +162,6 @@ describe("POST /todo", () => {
       .set("Accept", /json/)
       .send(validTodo);
     expect(response.status).toBe(200);
-    console.log(response.body);
     expect(
       response.body.subTodos[0].description ==
         validTodo.subTodos[0].description ||
@@ -253,7 +252,7 @@ describe("PATCH /todo/:id", () => {
     expect(res.status).toEqual(404);
     expect(res.body.massage).toEqual("invalid todo");
   });
-  
+
   it("return error if not already exiting", async () => {
     const res = await request.patch(`/todo/123123123`).set("Accept", /json/).send(testData.singleTodo);
     expect(res.status).toEqual(404);
