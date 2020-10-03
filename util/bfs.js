@@ -20,16 +20,20 @@ function BFS(root, childFieldName) {
 
   while (queue.length !== 0) {
     let node = queue.shift();
-    bfsTraversal.push(node);
-    markVisited(node);
-    if (isHasChilds(node, childFieldName)) {
-      node[childFieldName].forEach((n) => {
-        if (!isVisited(n)) queue.push(n);
-        else isTree = false;
-      });
+    if (isVisited(node)) {
+      isTree = false;
+    } else {
+      bfsTraversal.push(node);
+      markVisited(node);
+      if (isHasChilds(node, childFieldName)) {
+        node[childFieldName].forEach((n) => {
+          if (!isVisited(n)) queue.push(n);
+          else isTree = false;
+        });
+      }
     }
   }
-  return { bfsTraversal , isTree };
+  return { bfsTraversal, isTree };
 }
 
 export default BFS;

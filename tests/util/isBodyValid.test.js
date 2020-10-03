@@ -7,7 +7,6 @@ describe("Testing if isBodyValid can detect valid/invalid body of a todo", () =>
       description: "hello",
       subTodos: [{ noDescription: "world" }],
     };
-    console.log("no description");
     expect(isBodyValid(body)).toBe(false);
   });
 
@@ -17,7 +16,6 @@ describe("Testing if isBodyValid can detect valid/invalid body of a todo", () =>
       subTodos: [{ description: "2", subTodos: [] }],
     };
     cyclic.subTodos[0].subTodos.push(cyclic);
-    console.log("cyclic");
     expect(isBodyValid(cyclic)).toBe(false);
   });
 
@@ -29,18 +27,14 @@ describe("Testing if isBodyValid can detect valid/invalid body of a todo", () =>
     todo1.subTodos.push(todo3);
     todo2.subTodos.push(todo3);
 
-    console.log(todo3 === todo2.subTodos[0]);
     expect(isBodyValid(todo1)).toBe(false);
     todo2.subTodos.pop();
     todo3.subTodos.push(todo2);
-    console.log(todo3 === todo2.pop());
     expect(isBodyValid(todo1)).toBe(false);
   });
 
   it("valid todo to be valid", () => {
-    console.log("single valid");
     expect(isBodyValid(testData.todoList)).toBe(true);
-    console.log("valid");
     expect(isBodyValid(testData.singleTodo)).toBe(true);
   });
 });
