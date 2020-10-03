@@ -71,5 +71,11 @@ todoSchema.statics.populateAll = async function (root, limit) {
   }
 };
 
+todoSchema.statics.updateTodo = async function (todo) {
+};
+
+todoSchema.statics.deleteTodo = async function (todo) {
+};
+
 const todoModel = mongoose.model("todos", todoSchema, "todos");
 export default todoModel;

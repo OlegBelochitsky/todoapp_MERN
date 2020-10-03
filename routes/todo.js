@@ -46,14 +46,44 @@ todoRouter.post("/", async (req, res) => {
 });
 
 todoRouter.put("/:id", async (req, res) => {
+  if (isBodyValid(req.body)) {
+    const todo = await todoModel.updateTodo(req.body);
+    await todoModel.populateAll(todo);
+    res.status(200).send(todo);
+  } else {
+    res.status(404).send({ massage: "invalid todo" });
+  }
   res.end();
 });
 
 todoRouter.patch("/:id", async (req, res) => {
+  if (isBodyValid(req.body)) {
+    try {
+      const { _id } = req.body;
+      const inDb = await todoModel.findOne(_id);
+      if (!inDb) {
+        throw new Error(`not found todo with id:${_id}`);
+      } else {
+        const todo = await todoModel.updateTodo(req.body);
+        await todoModel.populateAll(todo);
+        res.status(200).send(todo);
+      }
+    } catch (e) {
+      res.status(404).send({ massage: e.massage });
+    }
+  } else {
+    res.status(404).send({ massage: "invalid todo" });
+  }
   res.end();
 });
 
 todoRouter.delete("/:id", async (req, res) => {
+  if (isBodyValid(req.body)) {
+    await todoModel.deleteTodo(req.body);
+    res.status(200).send({ massage: "todo deleted" });
+  } else {
+    res.status(404).send({ massage: "invalid todo" });
+  }
   res.end();
 });
 
