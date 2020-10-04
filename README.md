@@ -31,8 +31,6 @@ For testing and Development:
 - Support all mthods (GET, POST, PUT, PATCH, DELETE).
 - request and respond with JSON.
 
-![screenshot](https://)
-
 ### install & usage
 
 ##### dependencies:
@@ -41,7 +39,7 @@ Have a url to your mongodb database.
 
 ##### install:  
  1) Download the folder 
- 2) create .env file inside the folder  
+ 2) create .env file inside the folder.  
 example for .env file: 
 ```bash
 MONGODB_URL=mongodb://localhost/db
@@ -50,7 +48,7 @@ PORT=3000
 PORT_TEST=3000
 HOST=localhost
 ```
-3) Make init_and_start.sh executive by running `chmod +x init_and_start.sh` from the folder.
+3) Make init_and_start.sh executable by running `chmod +x init_and_start.sh` from the folder.
 4) Run `npm install` from inside your app directory.
 
 ##### usage:
