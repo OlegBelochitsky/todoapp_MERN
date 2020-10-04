@@ -58,19 +58,16 @@ todoRouter.put("/:id", async (req, res) => {
 
 todoRouter.patch("/:id", async (req, res) => {
   if (isBodyValid(req.body)) {
-    try {
-      const { _id } = req.body;
-      const inDb = await todoModel.findOne(_id);
-      if (!inDb) {
-        throw new Error(`not found todo with id:${_id}`);
-      } else {
-        const todo = await todoModel.updateTodo(req.body);
-        await todoModel.populateAll(todo);
-        res.status(200).send(todo);
-      }
-    } catch (e) {
-      res.status(404).send({ massage: e.massage });
+    try{
+      const [inDb] = await todoModel.find({ _id: req.params.id });
+      inDb.description;
+    }catch{
+      res.status(404).send({ massage: "nonexiting todo" });
+      return;
     }
+    const todo = await todoModel.updateTodo(req.body);
+    await todoModel.populateAll(todo);
+    res.status(200).send(todo);
   } else {
     res.status(404).send({ massage: "invalid todo" });
   }
@@ -78,11 +75,13 @@ todoRouter.patch("/:id", async (req, res) => {
 });
 
 todoRouter.delete("/:id", async (req, res) => {
-  if (isBodyValid(req.body)) {
-    await todoModel.deleteTodo(req.body);
+  const todo = await todoModel.findOne({ _id: req.params.id });
+  if (todo) {
+    await todoModel.populateAll(todo);
+    await todoModel.deleteTodo(todo);
     res.status(200).send({ massage: "todo deleted" });
   } else {
-    res.status(404).send({ massage: "invalid todo" });
+    res.status(400).send({ massage: "invalid todo" });
   }
   res.end();
 });

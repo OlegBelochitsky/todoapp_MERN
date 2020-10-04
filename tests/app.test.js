@@ -155,7 +155,7 @@ describe("POST /todo", () => {
     expect(fromDb.description).toEqual(validTodo.description);
   });
 
-  it("after sucsestful save respond is status 200 with papulated todo", async () => {
+  it("after sucsestful save respond is status 200 with populated todo", async () => {
     const validTodo = testData.todoList;
     const response = await request
       .post("/todo")
@@ -197,27 +197,40 @@ describe("PUT /todo/:id", () => {
   });
 
   it("update exiting todo", async () => {
-    const todo= await todoModel.papulateAll( await todoModel.saveTodo(testData.todoList));
+    const todo = await todoModel.saveTodo(testData.todoList);
+    await todoModel.populateAll(todo);
     todo.description = "new description";
-    const res = await request.put(`/todo/${todo._id}`).set("Accept", /json/).send(todo);
+    const res = await request
+      .put(`/todo/${todo._id}`)
+      .set("Accept", /json/)
+      .send(JSON.parse(JSON.stringify(todo)));
     expect(res.body.description).toEqual("new description");
   });
 
   it("adding new todo (as root) if not already exiting", async () => {
-    const res = await request.put(`/todo/123123`).set("Accept", /json/).send(testData.todoList);
+    const res = await request
+      .put(`/todo/123123`)
+      .set("Accept", /json/)
+      .send(JSON.parse(JSON.stringify(testData.todoList)));
     expect(res.body.description).toEqual(testData.todoList.description);
     expect(res.body.isRoot).toBe(true);
   });
 
-  it("retruning papulated todo", async () => {
-    const res = await request.put("/todo/123123").set("Accept", /json/).send(testData.todoList);
+  it("retruning populated todo", async () => {
+    const res = await request
+      .put("/todo/123123")
+      .set("Accept", /json/)
+      .send(JSON.parse(JSON.stringify(testData.todoList)));
     expect(res.body.subTodos[0]).toBeDefined();
     expect(res.body.subTodos[1]).toBeDefined();
   });
 
   it("return error if bad todo", async () => {
     const badTodo = { notTodo: "not a todo" };
-    const res = await request.put("/todo/123123").set("Accept", /json/).send(badTodo);
+    const res = await request
+      .put("/todo/123123")
+      .set("Accept", /json/)
+      .send(JSON.parse(JSON.stringify(badTodo)));
     expect(res.status).toEqual(404);
     expect(res.body.massage).toEqual("invalid todo");
   });
@@ -240,28 +253,43 @@ describe("PATCH /todo/:id", () => {
   });
 
   it("update exiting todo", async () => {
-    const todo= await todoModel.papulateAll( await todoModel.saveTodo(testData.todoList));
+    const todo = await todoModel.saveTodo(testData.todoList);
+    await todoModel.populateAll(todo);
     todo.description = "new description";
-    const res = await request.patch(`/todo/${todo._id}`).set("Accept", /json/).send(todo);
+    const res = await request
+      .patch(`/todo/${todo._id}`)
+      .set("Accept", /json/)
+      .send(JSON.parse(JSON.stringify(todo)));
+    expect(res.status).toEqual(200);
     expect(res.body.description).toEqual("new description");
   });
 
   it("return error if bad todo", async () => {
     const badTodo = { notTodo: "not a todo" };
-    const res = await request.patch(`/todo/123123123`).set("Accept", /json/).send(badTodo);
+    const res = await request
+      .patch(`/todo/123123123`)
+      .set("Accept", /json/)
+      .send(JSON.parse(JSON.stringify(badTodo)));
     expect(res.status).toEqual(404);
     expect(res.body.massage).toEqual("invalid todo");
   });
 
   it("return error if not already exiting", async () => {
-    const res = await request.patch(`/todo/123123123`).set("Accept", /json/).send(testData.singleTodo);
+    const res = await request
+      .patch(`/todo/123123123`)
+      .set("Accept", /json/)
+      .send(JSON.parse(JSON.stringify(testData.singleTodo)));
     expect(res.status).toEqual(404);
     expect(res.body.massage).toEqual("nonexiting todo");
   });
 
-  it("retruning papulated todo", async () => {
-    const todo= await todoModel.papulateAll( await todoModel.saveTodo(testData.todoList));
-    const res = await request.patch(`/todo/${todo._id}`).set("Accept", /json/).send(todo);
+  it("retruning populated todo", async () => {
+    const todo = await todoModel.saveTodo(testData.todoList);
+    await todoModel.populateAll(todo);
+    const res = await request
+      .patch(`/todo/${todo._id}`)
+      .set("Accept", /json/)
+      .send(JSON.parse(JSON.stringify(todo)));
     expect(res.body.subTodos[0]).toBeDefined();
     expect(res.body.subTodos[1]).toBeDefined();
   });
@@ -284,23 +312,23 @@ describe("DELETE /todo/:id", () => {
   });
 
   it("return error if not exiting", async () => {
-    const badId = 'notReadyAnId';
+    const badId = "notReadyAnId";
     const res = await request.delete(`/todo/${badId}`);
     expect(res.status).toBe(400);
     expect(res.body.massage).toEqual("invalid todo");
   });
 
   it("sucsess massage on sucsestful delete", async () => {
-    const {_id} = await todoModel.saveTodo(testData.todoList);
+    const { _id } = await todoModel.saveTodo(testData.todoList);
     const res = await request.delete(`/todo/${_id}`);
     expect(res.status).toBe(200);
     expect(res.body.massage).toEqual("todo deleted");
   });
 
   it("todo deleted from db", async () => {
-    const {_id} = await todoModel.saveTodo(testData.todoList);
+    const { _id } = await todoModel.saveTodo(testData.todoList);
     const res = await request.delete(`/todo/${_id}`);
-    const todos = todoModel.find({});
+    const todos = await todoModel.find({});
     expect(todos.length).toBe(0);
   });
 
