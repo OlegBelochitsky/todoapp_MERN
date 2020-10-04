@@ -89,16 +89,20 @@ describe("GET /todo/:id", () => {
     todoModel.deleteMany({}, done);
   });
 
-  it("get 404 request when nonexiting id", async () => {
-    const todo = testData.todoList;
-    const { _id } = await todoModel.saveTodo(todo);
+  it("get 404 + invalid id when sending bad format id", async () => {
     const id = "123123";
     const response = await request.get(`/todo/${id}`);
     expect(response.status).toBe(404);
+    expect(response.body.massage.slice(0, 11)).toEqual("invalid id:");
+  });
 
-    const id2 = (_id[0] == "a" ? "a" : "b") + ("" + _id).slice(1);
-    const response2 = await request.get(`/todo/${id2}`);
-    expect(response2.status).toBe(404);
+  it("get 404 + there is no todo when sending nonexiting id", async () => {
+    const id = mongoose.Types.ObjectId();
+    const response = await request.get(`/todo/${id}`);
+    expect(response.status).toBe(404);
+    expect(response.body.massage.slice(0, 24)).toEqual(
+      "there is no todo with id"
+    );
   });
 
   it("recived the requested id", async () => {
@@ -196,6 +200,26 @@ describe("PUT /todo/:id", () => {
     todoModel.deleteMany({}, done);
   });
 
+  it("get 404 + invalid id when sending bad format id", async () => {
+    const id = "123123";
+    const response = await request
+      .put(`/todo/${id}`)
+      .set("Accept", /json/)
+      .send(testData.todoList);
+    expect(response.status).toBe(404);
+    expect(response.body.massage.slice(0, 11)).toEqual("invalid id:");
+  });
+
+  it("return error if bad todo", async () => {
+    const badTodo = { notTodo: "not a todo" };
+    const res = await request
+      .put(`/todo/${mongoose.Types.ObjectId()}`)
+      .set("Accept", /json/)
+      .send(badTodo);
+    expect(res.status).toEqual(404);
+    expect(res.body.massage).toEqual("invalid todo");
+  });
+
   it("update exiting todo", async () => {
     const todo = await todoModel.saveTodo(testData.todoList);
     await todoModel.populateAll(todo);
@@ -209,30 +233,20 @@ describe("PUT /todo/:id", () => {
 
   it("adding new todo (as root) if not already exiting", async () => {
     const res = await request
-      .put(`/todo/123123`)
+      .put(`/todo/${mongoose.Types.ObjectId()}`)
       .set("Accept", /json/)
-      .send(JSON.parse(JSON.stringify(testData.todoList)));
+      .send(testData.todoList);
     expect(res.body.description).toEqual(testData.todoList.description);
     expect(res.body.isRoot).toBe(true);
   });
 
   it("retruning populated todo", async () => {
     const res = await request
-      .put("/todo/123123")
+      .put(`/todo/${mongoose.Types.ObjectId()}`)
       .set("Accept", /json/)
-      .send(JSON.parse(JSON.stringify(testData.todoList)));
+      .send(testData.todoList);
     expect(res.body.subTodos[0]).toBeDefined();
     expect(res.body.subTodos[1]).toBeDefined();
-  });
-
-  it("return error if bad todo", async () => {
-    const badTodo = { notTodo: "not a todo" };
-    const res = await request
-      .put("/todo/123123")
-      .set("Accept", /json/)
-      .send(JSON.parse(JSON.stringify(badTodo)));
-    expect(res.status).toEqual(404);
-    expect(res.body.massage).toEqual("invalid todo");
   });
 
   afterAll((done) => {
@@ -252,6 +266,37 @@ describe("PATCH /todo/:id", () => {
     todoModel.deleteMany({}, done);
   });
 
+  it("get 404 + invalid id when sending bad format id", async () => {
+    const id = "123123";
+    const response = await request
+      .patch(`/todo/${id}`)
+      .set("Accept", /json/)
+      .send(testData.todoList);
+    expect(response.status).toBe(404);
+    expect(response.body.massage.slice(0, 11)).toEqual("invalid id:");
+  });
+
+  it("get 404 + there is no todo when sending nonexiting id", async () => {
+    const id = mongoose.Types.ObjectId();
+    const response = await request
+      .patch(`/todo/${id}`)
+      .set("Accept", /json/)
+      .send(testData.todoList);
+    expect(response.status).toBe(404);
+    expect(response.body.massage.slice(0, 16)).toEqual("not exiting id: ");
+  });
+
+  it("return 400 + invalid todo if bad todo", async () => {
+    const { _id } = await todoModel.saveTodo(testData.todoList);
+    const badTodo = { notTodo: "not a todo" };
+    const res = await request
+      .patch(`/todo/${_id}`)
+      .set("Accept", /json/)
+      .send(badTodo);
+    expect(res.status).toEqual(400);
+    expect(res.body.massage).toEqual("invalid todo");
+  });
+
   it("update exiting todo", async () => {
     const todo = await todoModel.saveTodo(testData.todoList);
     await todoModel.populateAll(todo);
@@ -262,25 +307,6 @@ describe("PATCH /todo/:id", () => {
       .send(JSON.parse(JSON.stringify(todo)));
     expect(res.status).toEqual(200);
     expect(res.body.description).toEqual("new description");
-  });
-
-  it("return error if bad todo", async () => {
-    const badTodo = { notTodo: "not a todo" };
-    const res = await request
-      .patch(`/todo/123123123`)
-      .set("Accept", /json/)
-      .send(JSON.parse(JSON.stringify(badTodo)));
-    expect(res.status).toEqual(404);
-    expect(res.body.massage).toEqual("invalid todo");
-  });
-
-  it("return error if not already exiting", async () => {
-    const res = await request
-      .patch(`/todo/123123123`)
-      .set("Accept", /json/)
-      .send(JSON.parse(JSON.stringify(testData.singleTodo)));
-    expect(res.status).toEqual(404);
-    expect(res.body.massage).toEqual("nonexiting todo");
   });
 
   it("retruning populated todo", async () => {

@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import todoModel from "../models/todo.js";
 import isBodyValid from "../util/isBodyValid.js";
 
@@ -18,15 +19,19 @@ todoRouter.get("/", async (req, res) => {
 });
 
 todoRouter.get("/:id", async (req, res) => {
+  let id;
   try {
-    const todo = await todoModel.findOne({ _id: req.params.id });
-    if (todo) {
-      await todoModel.populateAll(todo);
-      res.status(200).send({ todo: todo });
-    } else {
-      throw new Error("id not found");
-    }
+    id = mongoose.Types.ObjectId(req.params.id);
   } catch (e) {
+    res.status(404).send({ massage: `invalid id: ${id}` });
+    res.end();
+    return;
+  }
+  const todo = await todoModel.findOne({ _id: req.params.id });
+  if (todo) {
+    await todoModel.populateAll(todo);
+    res.status(200).send({ todo: todo });
+  } else {
     res
       .status(404)
       .send({ massage: `there is no todo with id ${req.params.id} in DB` });
@@ -46,30 +51,48 @@ todoRouter.post("/", async (req, res) => {
 });
 
 todoRouter.put("/:id", async (req, res) => {
+  let id;
+  try {
+    id = mongoose.Types.ObjectId(req.params.id);
+  } catch (e) {
+    res.status(404).send({ massage: `invalid id: ${req.params.id}` });
+    res.end();
+    return;
+  }
   if (isBodyValid(req.body)) {
-    const todo = await todoModel.updateTodo(req.body);
+    const toSave = { ...req.body, _id: req.params.id };
+    const todo = await todoModel.updateTodo(toSave);
     await todoModel.populateAll(todo);
     res.status(200).send(todo);
-  } else {
+  }
+  else{
     res.status(404).send({ massage: "invalid todo" });
   }
   res.end();
 });
 
 todoRouter.patch("/:id", async (req, res) => {
+  let id;
+  try {
+    id = mongoose.Types.ObjectId(req.params.id);
+  } catch (e) {
+    res.status(404).send({ massage: `invalid id: ${req.params.id}` });
+    res.end();
+    return;
+  }
+  if( (await todoModel.find({_id:id})).length === 0 ){
+    res.status(404).send({ massage: `not exiting id: ${req.params.id}` });
+    res.end();
+    return;
+  }
   if (isBodyValid(req.body)) {
-    try{
-      const [inDb] = await todoModel.find({ _id: req.params.id });
-      inDb.description;
-    }catch{
-      res.status(404).send({ massage: "nonexiting todo" });
-      return;
-    }
-    const todo = await todoModel.updateTodo(req.body);
+    const toSave = { ...req.body, _id: req.params.id };
+    const todo = await todoModel.updateTodo(toSave);
     await todoModel.populateAll(todo);
     res.status(200).send(todo);
-  } else {
-    res.status(404).send({ massage: "invalid todo" });
+  }
+  else{
+    res.status(400).send({ massage: "invalid todo" });
   }
   res.end();
 });

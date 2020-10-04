@@ -81,6 +81,7 @@ todoSchema.statics.updateTodo = async function (todo) {
     await this.deleteTodo(root);
     return this.saveTodo(todo);
   } else {
+    todo.isRoot = true;
     return this.saveTodo(todo);
   }
 };
