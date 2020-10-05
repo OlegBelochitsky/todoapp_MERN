@@ -73,13 +73,29 @@ todoSchema.statics.populateAll = async function (root, limit) {
 
 todoSchema.statics.updateTodo = async function (todo) {
   let root;
-  if (todo?._id) 
-      root = await this.findOne({ _id: todo._id });
+  if (todo?._id) root = await this.findOne({ _id: todo._id });
 
-  if(root){
+  if (root) {
     await this.populateAll(root);
-    await this.deleteTodo(root);
-    return this.saveTodo(todo);
+    await Promise.all(root.subTodos.map((subTodo) => this.deleteTodo(subTodo)));
+    if (todo?.subTodos) {
+      const newSubTodos = todo.subTodos;
+      const savedSubTodos = await Promise.all(
+        newSubTodos.map((subTodo) => this.saveTodo(subTodo))
+      );
+      todo.subTodos = [];
+      for (const savedSubTodo of savedSubTodos)
+        todo.subTodos.push(savedSubTodo._id);
+    }
+
+    await this.updateOne(
+      {
+        _id: todo._id,
+      },
+      todo,
+      { upsert: true }
+    );
+    return await this.findOne({ _id: todo._id });
   } else {
     todo.isRoot = true;
     return this.saveTodo(todo);
