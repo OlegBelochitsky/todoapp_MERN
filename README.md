@@ -123,13 +123,11 @@ curl -d "@todo.json" -H "Content-Type: application/json" -X POST 'http://localho
 ```
 
 ###### PUT
-** not working properly yet
 ```sh 
 curl -d "@todo.json" -H "Content-Type: application/json/" -X PUT 'http://localhost:3000/todo/5f7adf32e917015fdc9c1fb8' | json_pp
 ```
 
 ###### PATCH
-** not working properly yet
 ```sh
 curl -d "@todo.json" -H "Content-Type: application/json" -X PATCH 'http://localhost:3000/todo/5f7adf32e917015fdc9c1fb8' | json_pp
 ```
