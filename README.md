@@ -26,7 +26,7 @@ Client:
 
 Used for testing and development:
 
-- Jest.js
+- Jest
 - Supertest
 - nodemon
 

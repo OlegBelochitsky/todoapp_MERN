@@ -108,6 +108,13 @@ describe("Testing todo model", () => {
     ).toBe(true);
   });
 
+  it("updateTodo keep old id", async () => {
+    const root = await todoModel.saveTodo(testData.todoList);
+    await todoModel.populateAll(root);
+    const todo = await todoModel.updateTodo(root);
+    expect(todo._id).toEqual(root._id);
+  })
+
   it("deleteTodo delete todo", async () => {
     const todo = await todoModel.saveTodo(testData.singleTodo);
     await todoModel.populateAll(todo);
